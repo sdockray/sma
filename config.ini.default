@@ -1,0 +1,12 @@
+[dirs]
+base_dir = archives
+links_dir = web
+screenshots_dir = screenshots
+images_dir = images
+
+[web]
+images_path = images
+
+[OAuth]
+fb_client_id = 123
+fb_client_secret = 456

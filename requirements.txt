@@ -1,0 +1,10 @@
+requests
+facebook-sdk
+selenium
+#phantomjs
+summary-extraction
+markdown2
+cherrypy
+readability-lxml
+html2text
+cssselect

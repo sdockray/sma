@@ -1,5 +1,5 @@
 import cherrypy
-from from sma.archiver import ArchiveServer
+from sma.archiver import ArchiveServer
 
 def application(environ, start_response):
   app = cherrypy.tree.mount(ArchiveServer(), '/')

@@ -24,6 +24,7 @@ OAUTH_FB_CLIENT_SECRET = config.get('OAuth', 'fb_client_secret')
 SERVER_PORT = config.get('server', 'server_port')
 SERVER_IMAGES = config.get('server', 'images_dir')
 SERVER_CSS = config.get('server', 'css_dir')
+SERVER_SESSIONS = config.get('server', 'sessions_dir')
 
 
 #https://developers.facebook.com/tools/explorer/145634995501895/?method=GET&path=me%2Fgroups&version=v2.3&

@@ -53,6 +53,11 @@ class ArchiveServer(object):
 	def default(self, attr="abc"):
 		return "Page not found!"
 
+	@cherrypy.expose
+	def index(self):
+		with open('README.md', 'r') as f:
+			return html(markdown2.markdown(f.read()))
+
 	# Viewing groups and posts (within groups)
 	@cherrypy.expose
 	def group(self, id, post=None, post_id=None):

@@ -1,7 +1,7 @@
 import cherrypy
 from sma.server import ArchiveServer
 
-from sma.config import PATH_IMAGES, SERVER_PORT, SERVER_CSS, SERVER_IMAGES
+from sma.config import PATH_IMAGES, SERVER_PORT, SERVER_CSS, SERVER_IMAGES, SERVER_SESSIONS
 
 def application(environ, start_response):
 	conf = {

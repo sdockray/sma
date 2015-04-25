@@ -12,5 +12,5 @@ def application(environ, start_response):
 		'tools.sessions.on': True,
 		'server.socket_port': SERVER_PORT
 	})
-  app = cherrypy.tree.mount(ArchiveServer(), '/', config=conf)
-  return cherrypy.tree(environ, start_response)
+	app = cherrypy.tree.mount(ArchiveServer(), '/', config=conf)
+	return cherrypy.tree(environ, start_response)

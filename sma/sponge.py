@@ -25,29 +25,32 @@ def all(url):
 
 
 # Download image
-def image(url):
-	response = requests.get(url, stream=True)
-	path = files.save_image(response, url)
-	del response
-	return path
+def image(url, force=False):
+	if force or not os.path.exists(files.get_image_path(url)):
+		response = requests.get(url, stream=True)
+		path = files.save_image(response, url)
+		del response
+		return path
+	else:
+		return files.get_image_path(url)
 
 # requests a url and converts content to markdown
-def content(url):
-	try:
-		response = requests.get(url, timeout=10)
-		c = "this is an archive. [go to %s](%s)\n\n" % (url,url)
-		c = "%s---\n\n" % c
-		if response.ok:
-			c = "%s### %s\n" % (c, Document(response.content).short_title())
-			c = "%s%s" % (c, html2text.html2text(Document(response.content).summary()))
-		else:
-			c = "%sFor one reason or another, this document couldn't be archived." % c
-		files.save_content(c, url)
-	except:
-		print "Failed to make markdown from: ", url
+def content(url, force=False):
+	if force or not os.path.exists(files.get_content_path(url)):
+		try:
+			response = requests.get(url, timeout=10)
+			c = "this is an archive. [go to %s](%s)\n\n" % (url,url)
+			c = "%s---\n\n" % c
+			if response.ok:
+				c = "%s### %s\n" % (c, Document(response.content).short_title())
+				c = "%s%s" % (c, html2text.html2text(Document(response.content).summary()))
+			else:
+				c = "%sFor one reason or another, this document couldn't be archived." % c
+			files.save_content(c, url)
+		except:
+			print "Failed to make markdown from: ", url
 
-
-def screenshot(url):
+def screenshot(url, force=False):
 	path = files.screenshot_path(url)
 	if not os.path.exists(path):
 		driver = webdriver.PhantomJS()

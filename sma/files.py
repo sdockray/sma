@@ -78,14 +78,18 @@ def readable(url):
 			return f.read()
 	return ""
 
-# saves an image
-def save_image(response, url):
+#
+def get_image_path(url):
 	imgd = os.path.join(DIR_BASE, DIR_IMAGES)
 	if not os.path.exists(imgd):
 		os.makedirs(imgd)
 	parsed = urlparse(url)
 	filename, file_ext = os.path.splitext(os.path.basename(parsed.path))
-	path = os.path.join(imgd, "%s%s" %(filename[1:], file_ext))
+	return os.path.join(imgd, "%s%s" %(filename[1:], file_ext))
+
+# saves an image
+def save_image(response, url):
+	path = get_image_path(url)
 	try:
 		with open(path, 'wb') as f:
 			shutil.copyfileobj(response.raw, f)
@@ -94,12 +98,16 @@ def save_image(response, url):
 		print "Failed to save image to ",path
 		return None
 
-# saves content
-def save_content(s, url):
+# 
+def get_content_path(url):
 	cd = os.path.join(DIR_BASE, DIR_LINKS)
 	if not os.path.exists(cd):
 		os.makedirs(cd)
-	path = os.path.join(cd, "%s.md" % hashlib.md5(url).hexdigest())	
+	return os.path.join(cd, "%s.md" % hashlib.md5(url).hexdigest())	
+
+# saves content
+def save_content(s, url):
+	path = get_content_path(url)	
 	try:
 		with open(path, 'w') as f:
 			f.write(s.encode('utf-8').strip())

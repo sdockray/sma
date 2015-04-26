@@ -137,6 +137,17 @@ class GroupArchive(Archive):
 					self.users[k] = post.users[k]
 			#print str(post)
 
+	# builds snapshots of links
+	def snaps(self):
+		count = 0
+		for url in self.links:
+			if count % 5 == 4:
+				self.save()
+			self.links[url].screenshot()
+			self.links[url].summarize()
+			self.links[url].archive()
+			count += 1
+
 	# Generates markdown for archive (and all posts!) and saves it to a location
 	def markdownify(self):
 		# markdownify links in text

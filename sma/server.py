@@ -89,7 +89,10 @@ Step 1: Get an access token
 To make an archive, you need to get an "access token" from this page:
 [https://developers.facebook.com/tools/explorer/](https://developers.facebook.com/tools/explorer/)
 
-Copy and paste it into the form below:
+1. Click on **Get Token** and choose **Get Access Token**
+2. Make sure **user_status**, **user_groups**, and **user_posts** are checked 
+3. Click the **Get Access Token** button
+4. Copy and paste it into the form below!
 <form method='get' action='/fb/access_token'>
 <input value="" name="value" size='75'/>
 <input type='submit' value='Submit' />
@@ -105,9 +108,9 @@ Copy and paste it into the form below:
 			content = """
 Step 2: Archiving group
 -----------------------
-Your group has been archived but now I need to build a web page with the data.
-It will take a while depending on the size of your group. [Click here to start](/fb/build_group/%s)
-			""" % value
+Your group has been archived and can be seen [here](/group/%s) but now I'd like to grab images and page content from all the links.
+It will take a pretty long time depending on how many links your group has shared. [Click here to start and check back later](/fb/build_group/%s)
+			""" % (value,value)
 		elif action=='build_group':
 			fb = FB(cherrypy.session['access_token'])
 			fb.rebuild_group(value, do_snaps=True)

@@ -390,6 +390,7 @@ class FB(object):
 	def archive_group(self, id):
 		a = GroupArchive(self.g, id)
 		a.save()
+		a.markdownify()
 
 	def rebuild_group(self, id, do_snaps=False):
 		a = GroupArchive(self.g, id)

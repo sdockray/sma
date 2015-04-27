@@ -1,10 +1,11 @@
-import os
+import os, re
 
 import requests
 
 from selenium import webdriver
 from readability.readability import Document
 from summary import Summary
+import youtube_dl
 import html2text
 
 from . import files
@@ -12,10 +13,27 @@ from . import files
 
 # Gets summary
 def summary(url):
+	youtube_regex = (
+		r'(https?://)?(www\.)?'
+		'(youtube|youtu|youtube-nocookie)\.(com|be)/')
+	if re.match(youtube_regex, url):
+		return summary_youtube(url)
+	# all non-youtube
 	summ = Summary(url)
 	summ.extract()
 	return (summ.title, summ.description, summ.image.url)
 
+# Handles Youtube summaries
+def summary_youtube(url, force=False):
+	ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s'})
+	with ydl:
+		result = ydl.extract_info(url, download=False)
+	# get the (first) video
+	if 'entries' in result:
+		video = result['entries'][0]
+	else:
+		video = result
+	return (video['title'] if 'title' in video else url, '', video['thumbnail'] if 'thumbnail' in video else None)
 
 # Grabs things from the internet and saves them
 def all(url):
@@ -61,3 +79,4 @@ def screenshot(url, force=False):
 	files.thumbnail(path)
 	return path
 	#print "Screenshot saved to: ",filepath
+

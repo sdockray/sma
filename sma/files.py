@@ -137,7 +137,11 @@ def thumbnail(path, dims=(150,150)):
 	if path and not os.path.exists(tn(path)):
 		try:
 			img = Image.open(path)
-			img.thumbnail(dims, Image.ANTIALIAS)
-			img.save(tn(path))
+			if img.size[0]>dims[0] or img.size[1]>dims[1]:
+				img = img.resize(dims, image.ANTIALIAS)
+				img.save(tn(path))
+			else:
+				img.thumbnail(dims, Image.ANTIALIAS)
+				img.save(tn(path))
 		except:
 			print "Failed to create thumbnail"

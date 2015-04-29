@@ -139,7 +139,7 @@ def thumbnail(path, dims=(150,150)):
 			img = Image.open(path)
 			if img.size[0]<=dims[0]:
 				wpercent = (dims[0] / float(img.size[0]))
- 				newh = int((float(img.size[1]) * float(wpercent)))
+ 				newh = int((float(img.size[1])*float(wpercent)))
 				img2 = img.resize((dims[0],newh), image.ANTIALIAS)
 				img2.save(tn(path))
 			else:

@@ -11,7 +11,7 @@ from sma.archiver import FB
 
 # for groups, or a post within a group
 def obj_path(id, sub_id=None):
-	if post_id:
+	if sub_id:
 		return os.path.join("archives", id, "posts", "%s.md" % sub_id)
 	else:
 		return os.path.join("archives", id, "archive.md")

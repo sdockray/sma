@@ -9,6 +9,15 @@ from sma import utils
 from sma.clusterer import Clusterer
 from sma.config import DIR_BASE
 
+# utility for handling facebook's paginated responses
+def handle_paginated_response(json, func):
+	data = json['data'] if 'data' in json else []
+	next = json['paging']['next'] if 'paging' in json else None
+	func(data)
+	if next:
+		return requests.get(next).json()
+	return None
+
 class Archive(object):
 	def __init__(self, *args, **kwargs):
 		self.id = None
@@ -108,17 +117,10 @@ class GroupArchive(Archive):
 			for d in data:
 				p = PostArchive(self.graph, d['id'])
 				self.add_post(p)
-		def handle_response(json):
-			data = json['data'] if 'data' in json else []
-			next = json['paging']['next'] if 'paging' in json else None
-			load_data(data)
-			if next:
-				return requests.get(next).json()
-			return None
 		# Go!
 		content = self.graph.get_connections(self.id, 'feed')
 		while content:
-			content = handle_response(content)
+			content = handle_paginated_response(content, load_data)
 	
 	def ingest_obj(self):
 		self.name = self.obj['name']
@@ -299,7 +301,9 @@ class PostArchive(Archive):
 		for c in self.comments:
 			output = "%s**%s:**\n%s\n\n" % (output, c.user.name, mdl(c.message))
 		self.save_markdown(output, save_location=save_location) 
-
+		#
+		users_str = ' - '.join([self.users[k].name for k in self.users])
+		files.save_txt(users_str, subdir=self.id, filename="title.txt")
 
 # Represents a user
 class User(object):
@@ -401,6 +405,7 @@ class FB(object):
 		self.g = facebook.GraphAPI(access_token)
 		self.name = "Me"
 		self.groups = []
+		self.posts = []
 
 	def archive_group(self, id):
 		a = GroupArchive(self.g, id)
@@ -418,15 +423,46 @@ class FB(object):
 		me = self.g.get_object('me')
 		self.name = me['name']
 		#groups = g.get_connections('me', 'feed')
-		groups = self.g.get_connections('me', 'groups')
-		for g in groups['data']:
-			self.groups.append((g['id'], g['name']))
+		def load_data(data):
+			for g in data:
+				self.groups.append((g['id'], g['name']))
+		# Go!
+		content = self.g.get_connections('me', 'groups')
+		while content:
+			content = handle_paginated_response(content, load_data)
+
+	def archive_post(self, id):
+		a = PostArchive(self.g, id)
+		a.save()
+		a.snaps()
+		a.markdownify()
+		a.save()
+
+	def load_posts(self, min_comments=25):
+		me = self.g.get_object('me')
+		self.name = me['name']
+		def load_data(data):
+			for d in data:
+				if 'comments' in d and 'data' in d['comments'] and len(d['comments']['data'])>=min_comments:
+					try:
+						title = d['message'][:100] if 'message' in d else d['name'] if 'name' in d else d['story']
+					except:
+						title = "A post with %s comments" % len(d['comments']['data'])
+					self.posts.append((d['id'], title))
+		# Go!
+		content = self.g.get_connections('me', 'feed')
+		while content:
+			content = handle_paginated_response(content, load_data)
+			
 
 	def markdownify(self):
 		output = "%s\n%s\n\n" %(self.name, '='*len(self.name))
 		output = "%s### Groups (click one to archive, then wait a couple minutes)\n" % output
 		for g in self.groups:
 			output = "%s- %s\n" % (output, "[%s](/fb/archive_group/%s)" %(g[1],g[0]))
+		output = "%s### Posts (click one to archive, then wait a couple minutes)\n" % output
+		for g in self.posts:
+			output = "%s- %s\n" % (output, "[%s](/fb/archive_post/%s)" %(g[1],g[0]))
 		return output
 
 if __name__ == '__main__':
@@ -434,7 +470,7 @@ if __name__ == '__main__':
 	g = GroupArchive(None, args[1])
 	if g.isLoaded:
 		if args[2]=='markdownify':
-			g.a.markdownify()
+			g.markdownify()
 		elif args[2]=='build':
 			g.snaps()
 			g.markdownify()

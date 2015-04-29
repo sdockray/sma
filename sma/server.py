@@ -10,19 +10,19 @@ from sma.auth import FBAuth
 from sma.archiver import FB
 
 # for groups, or a post within a group
-def group_path(group_id, post_id=None):
+def obj_path(id, sub_id=None):
 	if post_id:
-		return os.path.join("archives", group_id, "posts", "%s.md" % post_id)
+		return os.path.join("archives", id, "posts", "%s.md" % sub_id)
 	else:
-		return os.path.join("archives", group_id, "archive.md")
+		return os.path.join("archives", id, "archive.md")
 
 # for archived links
 def link_path(link_id):
 	return os.path.join("archives", "web", "%s.md" % link_id)
 
 # get a group name
-def group_title(group_id, default="Social Media Archive"):
-	t = load_txt(subdir=group_id, filename="title.txt")
+def obj_title(id, default="Social Media Archive"):
+	t = load_txt(subdir=id, filename="title.txt")
 	return t if t else default
 
 # loads a metadata file and converts to html
@@ -62,10 +62,15 @@ class ArchiveServer(object):
 	@cherrypy.expose
 	def group(self, id, post=None, post_id=None):
 		if post and post_id and post=='post':
-			return html(load(group_path(id, post_id)), title=group_title(id))
+			return html(load(obj_path(id, post_id)), title=obj_title(id))
 		else:
-			return html(load(group_path(id)), title=group_title(id))
+			return html(load(obj_path(id)), title=obj_title(id))
 			#return "group ",id
+
+	# Viewing groups and posts (within groups)
+	@cherrypy.expose
+	def post(self, id):
+		return html(load(obj_path(id)), title=obj_title(id))
 
 	# Viewing cached links
 	@cherrypy.expose
@@ -101,6 +106,7 @@ To make an archive, you need to get an "access token" from this page:
 		elif action=='list':
 			fb = FB(cherrypy.session['access_token'])
 			fb.load_groups()
+			fb.load_posts()
 			content = fb.markdownify()
 		elif action=='archive_group':
 			fb = FB(cherrypy.session['access_token'])
@@ -110,6 +116,14 @@ Step 2: Archiving group
 -----------------------
 Your group has been archived and can be seen [here](/group/%s) but now I'd like to grab images and page content from all the links.
 It will take a pretty long time depending on how many links your group has shared. [Click here to start and check back later](/fb/build_group/%s)
+			""" % (value,value)
+		elif action=='archive_post':
+			fb = FB(cherrypy.session['access_token'])
+			fb.archive_post(value)
+			content = """
+Step 2: Archiving post
+----------------------
+Your post has been archived and can be seen [here](/post/%s)
 			""" % (value,value)
 		elif action=='build_group':
 			fb = FB(cherrypy.session['access_token'])

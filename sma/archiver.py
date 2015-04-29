@@ -455,7 +455,9 @@ class FB(object):
 			content = handle_paginated_response(content, load_data)
 		# and stream
 		content = self.g.get_connections('me', 'home')
-		while content:
+		count = 0
+		while content and count<20:
+			count += 1
 			content = handle_paginated_response(content, load_data)
 			
 

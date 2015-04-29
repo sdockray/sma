@@ -98,6 +98,7 @@ To make an archive, you need to get an "access token" from this page:
 2. Make sure **user_status**, **user_groups**, and **user_posts** are checked 
 3. Click the **Get Access Token** button
 4. Copy and paste it into the form below!
+5. Hit submit and wait (a few minutes) for data to load 
 <form method='get' action='/fb/access_token'>
 <input value="" name="value" size='75'/>
 <input type='submit' value='Submit' />

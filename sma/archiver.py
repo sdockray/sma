@@ -1,4 +1,4 @@
-import os, re
+import os, re, sys
 
 import facebook
 import requests
@@ -47,10 +47,11 @@ class GroupArchive(Archive):
 		self.users = {}
 		self.links = {}
 		self.posts = {}
+		self.isLoaded = False
 		filename = kwargs['filename'] if 'filename' in kwargs else 'archive.pkl'
 		print "Initiating group archive: ",id
 		self.file_load(filename)
-		if not self.obj:
+		if not self.obj and self.graph:
 			self.graph_load()
 		print "Loaded %s posts" % len(self.posts)
 		print "..having a total of %s comments" % sum(len(self.posts[k].comments) for k in self.posts)
@@ -79,6 +80,7 @@ class GroupArchive(Archive):
 					if k in self.links:
 						post.links[k] = self.links[k]
 				self.add_post(post)
+		self.isLoaded = True
 	
 	def save(self, filename='archive.pkl'):
 		d = {'obj':self.obj, 'posts': [], 'links':[]}
@@ -95,9 +97,11 @@ class GroupArchive(Archive):
 		except:
 			print "** Failed!"
 			self.obj = {}
+			return
 		self.ingest_obj()
 		self.graph_load_posts()
 		self.save()
+		self.isLoaded = True
 
 	def graph_load_posts(self):
 		def load_data(data):
@@ -425,12 +429,14 @@ class FB(object):
 			output = "%s- %s\n" % (output, "[%s](/fb/archive_group/%s)" %(g[1],g[0]))
 		return output
 
-
 if __name__ == '__main__':
-	print "token:", ACCESS_TOKEN
-	a = GroupArchive(g, group_id, filename='archive.pkl')
-	#a.snaps()
-	a.markdownify()
-#a = PostArchive(g, post_id)
-#print str(a)
+	args = sys.argv[1:]
+	g = GroupArchive(None, args[1])
+	if g.isLoaded:
+		if args[2]=='markdownify':
+			g.a.markdownify()
+		elif args[2]=='build':
+			g.snaps()
+			g.markdownify()
+			g.save()
 

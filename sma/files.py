@@ -133,6 +133,7 @@ def tn(path):
 		return None
 	return "%s-tn%s" % (os.path.splitext(path)[0], os.path.splitext(path)[1])
 
+import traceback
 # makes a thumbnail, appending -tn to the filename
 def thumbnail(path, dims=(150,150)):
 	if path and not os.path.exists(tn(path)):
@@ -148,3 +149,5 @@ def thumbnail(path, dims=(150,150)):
 				img.save(tn(path))
 		except:
 			print "Failed to create thumbnail"
+			print traceback.format_exc()
+			print

@@ -124,7 +124,7 @@ It will take a pretty long time depending on how many links your group has share
 Step 2: Archiving post
 ----------------------
 Your post has been archived and can be seen [here](/post/%s)
-			""" % (value,value)
+			""" % value
 		elif action=='build_group':
 			fb = FB(cherrypy.session['access_token'])
 			fb.rebuild_group(value, do_snaps=True)

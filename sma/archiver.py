@@ -462,7 +462,8 @@ class FB(object):
 			output = "%s- %s\n" % (output, "[%s](/fb/archive_group/%s)" %(g[1],g[0]))
 		output = "%s### Posts (click one to archive, then wait a couple minutes)\n" % output
 		for g in self.posts:
-			output = "%s- %s\n" % (output, "[%s](/fb/archive_post/%s)" %(g[1],g[0]))
+			t = re.sub('[\[\]\(\)\n]', '', g[1])
+			output = "%s- %s\n" % (output, "[%s](/fb/archive_post/%s)" %(t,g[0]))
 		return output
 
 if __name__ == '__main__':

@@ -303,7 +303,8 @@ class PostArchive(Archive):
 		self.save_markdown(output, save_location=save_location) 
 		#
 		users_str = ' - '.join([self.users[k].name for k in self.users])
-		files.save_txt(users_str, subdir=self.id, filename="title.txt")
+		if not save_location:
+			files.save_txt(users_str, subdir=self.id, filename="title.txt")
 
 # Represents a user
 class User(object):

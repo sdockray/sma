@@ -454,11 +454,13 @@ class FB(object):
 		while content:
 			content = handle_paginated_response(content, load_data)
 		# and stream
+		"""
 		content = self.g.get_connections('me', 'home')
 		count = 0
 		while content and count<20:
 			count += 1
 			content = handle_paginated_response(content, load_data)
+		"""
 			
 
 	def markdownify(self):

@@ -12,7 +12,7 @@ from sma.config import DIR_BASE
 # utility for handling facebook's paginated responses
 def handle_paginated_response(json, func):
 	data = json['data'] if 'data' in json else []
-	next = json['paging']['next'] if 'paging' in json else None
+	next = json['paging']['next'] if 'paging' in json and 'next' in json['pagin'] else None
 	func(data)
 	if next:
 		return requests.get(next).json()

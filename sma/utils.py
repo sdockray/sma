@@ -12,6 +12,13 @@ SECRET_LENGTH = 32
 def extract_urls(s):
 	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', s)
 
+# is this url a youtube url?
+def is_youtube(url):
+	youtube_regex = (
+		r'(https?://)?(www\.)?'
+		'(youtube|youtu|youtube-nocookie)\.(com|be)/')
+	return re.match(youtube_regex, url)
+
 # A helper function to pretty-print Python objects as JSON
 def pp(o): 
     print json.dumps(o, indent=1)

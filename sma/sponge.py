@@ -1,4 +1,4 @@
-import os, re
+import os
 
 import requests
 
@@ -9,14 +9,12 @@ import youtube_dl
 import html2text
 
 from . import files
+from . import utils
 
 
 # Gets summary
 def summary(url):
-	youtube_regex = (
-		r'(https?://)?(www\.)?'
-		'(youtube|youtu|youtube-nocookie)\.(com|be)/')
-	if re.match(youtube_regex, url):
+	if utils.is_youtube(url):
 		return summary_youtube(url)
 	# all non-youtube
 	summ = Summary(url)

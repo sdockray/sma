@@ -36,11 +36,11 @@ class Archive(object):
 		return files.load_obj(self.id, filename)
 
 	# builds snapshots of links
-	def snaps(self):
+	def snaps(self, force=False):
 		for url in self.links:
-			self.links[url].screenshot()
-			self.links[url].summarize()
-			self.links[url].archive()
+			self.links[url].screenshot(force=force)
+			self.links[url].summarize(force=force)
+			self.links[url].archive(force=force)
 
 	# Generates markdown for archive and saves it to a location
 	def save_markdown(self, md, save_location=None):
@@ -338,8 +338,8 @@ class Link(object):
 		return "URL: %s\nDescription: %s" % (self.url.encode('utf-8').strip(), self.description.encode('utf-8').strip())
 
 	# @todo: ingest content (beautifulsoup? in the future, should it download video?)
-	def archive(self):
-		sponge.content(self.url)
+	def archive(self, force=False):
+		sponge.content(self.url, force=force)
 
 	# returns a markdown string representation of itself
 	# summary=True puts title, summary and image into a blockquote
@@ -350,6 +350,9 @@ class Link(object):
 		title_to_use_bracket_safe = re.sub('[\[\]\(\)]', '', title_to_use)
 		title_to_use_quote_safe = re.sub('["\(\)]', '', title_to_use)
 		preferred_image = self.snapshot if prefer_snapshot or not summary else self.image
+		# youtube links shouldshow thumbnail, not screenshot if possible
+		if utils.is_youtube(self.url):
+			preferred_image = self.image
 		if not preferred_image:
 			if self.image:
 				preferred_image = self.image
@@ -383,8 +386,8 @@ class Link(object):
 		else:
 			return "%s %s %s" % (self.title if hasattr(self,'title') else "", self.description, self.summary)
 
-	def summarize(self):
-		if not self.title:
+	def summarize(self, force=False):
+		if force or not self.title:
 			try:
 				self.title, self.summary, image_url = sponge.summary(self.url)
 			except:
@@ -396,8 +399,8 @@ class Link(object):
 		files.thumbnail(self.image)
 
 	# thumbnail
-	def screenshot(self):
-		self.snapshot = sponge.screenshot(self.url)
+	def screenshot(self, force=False):
+		self.snapshot = sponge.screenshot(self.url, force=force)
 
 class FB(object):
 	def __init__(self, access_token):

@@ -376,7 +376,7 @@ class Link(object):
 			return "%s %s %s" % (self.title if hasattr(self,'title') else "", self.description, self.summary)
 
 	def summarize(self):
-		if not self.summary:
+		if not self.title:
 			try:
 				self.title, self.summary, image_url = sponge.summary(self.url)
 			except:

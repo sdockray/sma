@@ -453,6 +453,10 @@ class FB(object):
 		content = self.g.get_connections('me', 'feed')
 		while content:
 			content = handle_paginated_response(content, load_data)
+		# and stream
+		content = self.g.get_connections('me', 'home')
+		while content:
+			content = handle_paginated_response(content, load_data)
 			
 
 	def markdownify(self):

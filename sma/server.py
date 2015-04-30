@@ -33,6 +33,21 @@ def load(path):
 	else:
 		return "Page not found."
 
+# searches a group
+def search(id, query):
+	found = []
+	search_path = os.path.join("archives", id, "posts","*.md")
+	for file in glob.glob(search_path):
+		with open(file) as f:
+			contents = f.read()
+		if query in contents:
+			post_id = os.path.splitext(os.path.split(file))[0]
+			try:
+				found.append(load(obj_path(id, post_id)))
+			except:
+				pass
+	return found
+
 # spits out the final html
 def html(html, title="Social Media Archive"):
 	return """
@@ -63,6 +78,8 @@ class ArchiveServer(object):
 	def group(self, id, post=None, post_id=None):
 		if post and post_id and post=='post':
 			return html(load(obj_path(id, post_id)), title=obj_title(id))
+		elif post and post_id and post=='search':
+			html(search(id, post_id))
 		else:
 			return html(load(obj_path(id)), title=obj_title(id))
 			#return "group ",id

@@ -394,7 +394,7 @@ class Link(object):
 			except:
 				image_url = None
 				print "Failed extraction of ", self.url
-			if not self.image and image_url:
+			if image_url and (force or not self.image):
 				self.image = sponge.image(image_url)
 		# try and make thumbnail
 		files.thumbnail(self.image)

@@ -48,7 +48,7 @@ def search(id, query):
 			except:
 				found.append(post_id)
 				pass
-	return found
+	return "\n\n---\n\n".join(found)
 
 # markup for a search form
 def search_form(id):

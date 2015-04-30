@@ -51,6 +51,19 @@ def search(id, query):
 				pass
 	return markdown2.markdown(found)
 
+def archive_index():
+	search_path = os.path.join("archives")
+	dirs = [(name, obj_title(name, default=None)) for name in os.listdir(search_path) if os.path.isdir(os.path.join(search_path, name))]
+	groups = "".join(["* [%s](/group/%s)\n"%(d[1],d[0]) for d in dirs if '_' not in d[0] and d[1] is not None])
+	posts = "".join(["* [%s](/post/%s)\n"%(d[1],d[0]) for d in dirs if '_' in d[0]])
+	return """
+### Archived groups
+%s
+
+### Archived posts
+%s
+	""" % (groups,posts)
+
 # markup for a search form
 def search_form(id, default=""):
 	return """
@@ -85,7 +98,7 @@ class ArchiveServer(object):
 	@cherrypy.expose
 	def index(self):
 		with open('README.md', 'r') as f:
-			return html(markdown2.markdown(f.read()))
+			return html(markdown2.markdown(f.read() + archive_index()))
 
 	# Viewing groups and posts (within groups)
 	@cherrypy.expose

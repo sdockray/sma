@@ -46,11 +46,22 @@ def search(id, query):
 			try:
 				found.append(load(obj_path(id, post_id)))
 			except:
+				found.append(post_id)
 				pass
 	return found
 
+# markup for a search form
+def search_form(id):
+	return """
+<form method='get' action='/group/%s/search'>
+<input value="" name="post_id" size='75'/>
+<input type='submit' value='Search' />
+</form>
+---
+	""" % id
+
 # spits out the final html
-def html(html, title="Social Media Archive"):
+def html(html, title="Social Media Archive", inject=""):
 	return """
 	<html>
 		<head>
@@ -59,9 +70,10 @@ def html(html, title="Social Media Archive"):
 		</head>
 		<body>
 			%s
+			%s
 		</body>
 	</html>
-	""" % (title, html)
+	""" % (title, inject, html)
 
 # 
 class ArchiveServer(object):
@@ -82,7 +94,7 @@ class ArchiveServer(object):
 		elif post and post_id and post=='search':
 			html(search(id, post_id))
 		else:
-			return html(load(obj_path(id)), title=obj_title(id))
+			return html(load(obj_path(id)), title=obj_title(id), inject=search_form(id))
 			#return "group ",id
 
 	# Viewing groups and posts (within groups)

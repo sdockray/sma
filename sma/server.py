@@ -53,6 +53,7 @@ def search(id, query):
 
 # markup for a search form
 def search_form(id):
+	return ""
 	return """
 <form method='get' action='/group/%s/search'>
 <input value="" name="post_id" size='75'/>

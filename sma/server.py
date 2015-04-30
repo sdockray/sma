@@ -43,7 +43,7 @@ def search(id, query):
 	for file in glob.glob(search_path):
 		with open(file) as f:
 			contents = f.read()
-		lc = contents.encode('utf-8').strip().lower()
+		lc = contents.decode('utf-8', 'ignore').lower()
 		if lq in lc:
 			try:
 				found.append(contents)

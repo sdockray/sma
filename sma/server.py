@@ -37,17 +37,17 @@ def load(path):
 
 # searches a group
 def search(id, query):
+	lq = query.lower()
 	found = []
 	search_path = os.path.join("archives", id, "posts","*.md")
 	for file in glob.glob(search_path):
 		with open(file) as f:
 			contents = f.read()
-		if query in contents:
-			post_id = os.path.splitext(os.path.split(file)[1])[0]
+		lc = contents.encode('utf-8').strip().lower()
+		if lq in lc:
 			try:
-				found.append(load(obj_path(id, post_id)))
+				found.append(contents)
 			except:
-				found.append(post_id)
 				pass
 	return "\n\n---\n\n".join(found)
 

@@ -86,7 +86,7 @@ def get_image_path(url):
 		os.makedirs(imgd)
 	parsed = urlparse(url)
 	filename, file_ext = os.path.splitext(os.path.basename(parsed.path))
-	return os.path.join(imgd, "%s%s" %(filename[1:], file_ext))
+	return os.path.join(imgd, "%s%s" %(hashlib.md5(url).hexdigest(), file_ext))
 
 # saves an image
 def save_image(response, url):

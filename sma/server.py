@@ -42,7 +42,7 @@ def search(id, query):
 		with open(file) as f:
 			contents = f.read()
 		if query in contents:
-			post_id = os.path.splitext(os.path.split(file))[0]
+			post_id = os.path.splitext(os.path.split(file)[1])[0]
 			try:
 				found.append(load(obj_path(id, post_id)))
 			except:

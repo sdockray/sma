@@ -38,7 +38,7 @@ def load(path):
 # searches a group
 def search(id, query):
 	lq = query.lower()
-	found = []
+	found = ""
 	search_path = os.path.join("archives", id, "posts","*.md")
 	for file in glob.glob(search_path):
 		with open(file) as f:
@@ -46,20 +46,20 @@ def search(id, query):
 		lc = contents.decode('utf-8', 'ignore').lower()
 		if lq in lc:
 			try:
-				found.append(contents)
+				found = "%s\n\n---\n\n%s" % (found, contents)
 			except:
 				pass
-	return "\n\n---\n\n".join(found)
+	return markdown2.markdown(found)
 
 # markup for a search form
-def search_form(id):
+def search_form(id, default=""):
 	return """
 <form method='get' action='/group/%s/search'>
-<input value="" name="post_id" size='75'/>
+<input value="%s" name="post_id" size='75'/>
 <input type='submit' value='Search' />
 </form>
 ---
-	""" % id
+	""" % (id,default)
 
 # spits out the final html
 def html(html, title="Social Media Archive", inject=""):
@@ -93,7 +93,7 @@ class ArchiveServer(object):
 		if post and post_id and post=='post':
 			return html(load(obj_path(id, post_id)), title=obj_title(id))
 		elif post and post_id and post=='search':
-			html(search(id, post_id))
+			return html(search(id, post_id), title="Search results: "+post_id, inject=search_form(id, default=post_id))
 		else:
 			return html(load(obj_path(id)), title=obj_title(id), inject=search_form(id))
 			#return "group ",id

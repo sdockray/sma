@@ -305,7 +305,7 @@ class PostArchive(Archive):
 		#
 		users_str = ' - '.join([self.users[k].name for k in self.users])
 		if not save_location:
-			title = initial_message if initial_message else self.link if 'link' in self and self.link else 'no title available'
+			title = initial_message if initial_message else self.link if hasattr(self, 'link') and self.link else 'no title available'
 			title = utils.truncate(re.sub('[\r\n]', ' / ', title), 180)
 			files.save_txt(title, subdir=self.id, filename="title.txt")
 

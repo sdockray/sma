@@ -10,6 +10,7 @@ from sma.files import load_txt
 from sma.config import PATH_IMAGES
 from sma.auth import FBAuth
 from sma.archiver import FB
+from sma.utils import truncate
 
 # for groups, or a post within a group
 def obj_path(id, sub_id=None):
@@ -25,7 +26,7 @@ def link_path(link_id):
 # get a group name
 def obj_title(id, default="Social Media Archive"):
 	t = load_txt(subdir=id, filename="title.txt")
-	return t if t else default
+	return truncate(t) if t else default
 
 # loads a metadata file and converts to html
 def load(path):

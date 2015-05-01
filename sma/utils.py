@@ -8,6 +8,10 @@ import string
 
 SECRET_LENGTH = 32
 
+# word safe truncate
+def truncate(content, length=80, suffix='...'):
+  return content if len(content) <= length else content[:length-len(suffix)].rsplit(' ', 1)[0] + suffix
+
 # Find all urls in a string
 def extract_urls(s):
 	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', s)

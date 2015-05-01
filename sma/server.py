@@ -87,7 +87,7 @@ def html(html, title="Social Media Archive", inject=""):
 			%s
 		</body>
 	</html>
-	""" % (title, inject, html.decode('utf-8', 'ignore'))
+	""" % (title, inject, html.encode('utf-8'))
 
 # 
 class ArchiveServer(object):

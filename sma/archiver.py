@@ -205,14 +205,15 @@ class PostArchive(Archive):
 		self.users = {}
 		self.links = {}
 		self.comments = []
-		#print "Initiating post archive: ",id
-		if 'filename' in kwargs:
-			self.file_load(kwargs['filename'])
 		if 'obj' in kwargs:
 			self.obj = kwargs['obj']
 			self.ingest_obj()
 		if not self.obj:
-			self.graph_load()
+			print "Initiating post archive: ",id
+			filename = kwargs['filename'] if 'filename' in kwargs else 'archive.pkl'
+			self.file_load(filename)
+			if self.graph and not self.obj:
+				self.graph_load()
 
 	def get_shorty(self, truncate=80):
 		if self.message:

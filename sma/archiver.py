@@ -227,6 +227,8 @@ class PostArchive(Archive):
 
 	def file_load(self, filename='archive.pkl'):
 		d = super(PostArchive, self).file_load(filename)
+		if not d:
+			return False		
 		if 'obj' in d:
 			self.obj = d['obj']
 			self.ingest_obj()

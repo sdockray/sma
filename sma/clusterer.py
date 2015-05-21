@@ -75,7 +75,7 @@ class Clusterer(object):
 		tfidf_matrix = tfidf_vectorizer.fit_transform(synopses)
 		
 		terms = tfidf_vectorizer.get_feature_names()
-		print terms
+		#print terms
 
 		from sklearn.metrics.pairwise import cosine_similarity
 		dist = 1 - cosine_similarity(tfidf_matrix)
